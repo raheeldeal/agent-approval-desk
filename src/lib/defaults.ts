@@ -1,0 +1,60 @@
+import type { DeskSettings, PurchaseIntent } from "./types";
+
+export const DEFAULT_SETTINGS: DeskSettings = {
+  dailyBudgetUsd: 5,
+  autoApproveUnderUsd: 0.05,
+  maxPaymentsPerSession: 10,
+  paymentsThisSession: 0,
+  spendTodayUsd: 0,
+  spendSessionUsd: 0,
+  sessionStartedAt: new Date().toISOString(),
+};
+
+export const SEED_INTENTS: PurchaseIntent[] = [
+  {
+    id: "seed-1",
+    agentId: "agent-research-01",
+    agentName: "Research Agent",
+    title: "Enrich company profile",
+    description: "Look up Acme Corp funding, headcount, and HQ for a sales brief.",
+    category: "data_enrichment",
+    amountUsd: 0.12,
+    endpoint: "https://stableenrich.dev/api/enrich/company",
+    status: "pending",
+    createdAt: new Date(Date.now() - 4 * 60_000).toISOString(),
+  },
+  {
+    id: "seed-2",
+    agentId: "agent-scraper-02",
+    agentName: "Scraper Agent",
+    title: "Scrape pricing page",
+    description: "Fetch competitor pricing table from public marketing site.",
+    category: "web_scrape",
+    amountUsd: 0.08,
+    endpoint: "https://stableenrich.dev/api/scrape",
+    status: "pending",
+    createdAt: new Date(Date.now() - 11 * 60_000).toISOString(),
+  },
+  {
+    id: "seed-3",
+    agentId: "agent-research-01",
+    agentName: "Research Agent",
+    title: "Verify work email",
+    description: "Validate deliverability for jane@startup.io before outreach.",
+    category: "api_call",
+    amountUsd: 0.03,
+    endpoint: "https://stableenrich.dev/api/verify/email",
+    status: "settled",
+    createdAt: new Date(Date.now() - 2 * 60 * 60_000).toISOString(),
+    resolvedAt: new Date(Date.now() - 2 * 60 * 60_000 + 30_000).toISOString(),
+    resolvedBy: "auto",
+    receipt: {
+      txId: "mock_seed_settled",
+      mode: "mock",
+      settledAt: new Date(Date.now() - 2 * 60 * 60_000 + 30_000).toISOString(),
+      amountUsd: 0.03,
+      endpoint: "https://stableenrich.dev/api/verify/email",
+      summary: "Email verified (seed data)",
+    },
+  },
+];
