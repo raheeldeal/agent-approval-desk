@@ -2,7 +2,7 @@
 
 Human-in-the-loop console for approving agent purchase intents and settling x402 micropayments. Inspired by **Stripe Link / Issuing for agents** and **Coinbase Agentic Wallets**.
 
-**Live demo:** add your Vercel URL here after deploy.
+![Approval desk with pending agent purchase requests](docs/screenshot.png)
 
 ## What it does
 
@@ -15,7 +15,7 @@ Human-in-the-loop console for approving agent purchase intents and settling x402
 ## Quick start (local)
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/agent-approval-desk.git
+git clone https://github.com/raheeldeal/agent-approval-desk.git
 cd agent-approval-desk
 npm install
 cp .env.example .env.local
@@ -61,27 +61,27 @@ Or connect the GitHub repo in the Vercel dashboard for automatic deploys on push
 
 Add env vars in **Vercel → Project → Settings → Environment Variables**.
 
-## Publish to GitHub
+## How it works
 
-```bash
-git branch -M main
-gh auth login   # if your token expired
-gh repo create agent-approval-desk --public --source=. --remote=origin --push
+```mermaid
+sequenceDiagram
+    participant Ag as Agent
+    participant D as Approval Desk
+    participant H as Human operator
+    participant P as Payment (mock, or x402 via Coinbase CDP)
+    Ag->>D: Purchase intent (what, why, amount)
+    alt Under auto-approve threshold and within daily budget
+        D->>P: Pay
+    else Over threshold
+        D->>H: Show in queue
+        H->>D: Approve or deny
+        D->>P: Pay if approved
+    end
+    P->>D: Receipt
+    D->>Ag: Settled or denied
 ```
 
-## Architecture
-
-```
-Agent submits intent → POST /api/intents
-  → auto-approve if amount ≤ threshold
-  → else status: pending
-
-Human approves → POST /api/intents/:id/approve
-  → executeApprovedPayment() (mock or CDP)
-  → status: settled + receipt
-
-Data persisted to data/snapshot.json locally, /tmp on Vercel serverless.
-```
+Data is stored in `data/snapshot.json` locally and in `/tmp` on Vercel.
 
 ## Stack
 
@@ -92,4 +92,4 @@ Data persisted to data/snapshot.json locally, /tmp on Vercel serverless.
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE).
